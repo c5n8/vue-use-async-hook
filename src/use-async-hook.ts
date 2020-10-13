@@ -1,9 +1,9 @@
 import { reactive, computed } from '@vue/composition-api'
 import { extend } from 'vue-extend-reactive'
 
-export default useAsyncFunction
+export default useAsync
 
-export function useAsyncFunction<
+export function useAsync<
   F extends (...args: any[]) => Promise<Unpacked<ReturnType<F>>>
 >(fn: F): PromiseSnapshot<F> {
   const state: State<F> = reactive({

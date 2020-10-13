@@ -1,9 +1,9 @@
 <p align="center"><img width="100" height="100" src="https://vuejs.org/images/logo.png" alt="Vue logo"></p>
 
-<h2 align="center">Vue Async Function</h2>
+<h2 align="center">Vue Async Hook</h2>
 
 <p align="center">
-  Reactive object that sync itself based on the latest snapshot of promise state by an async function.
+  Wrap async function with reactive and observable promise state.
 </p>
 
 #
@@ -20,12 +20,12 @@ If you want similar functionality, but as component, then checkout [vue-promise-
 
 - Using NPM
 ```
-npm install vue-async-function
+npm install vue-use-async-hook
 ```
 
 - Using Yarn
 ```
-yarn add vue-async-function
+yarn add vue-use-async-hook
 ```
 
 ## Usage
@@ -33,6 +33,10 @@ yarn add vue-async-function
 You must install `@vue/composition-api` as a plugin via `Vue.use()` beforehand.
 
 See [@vue/composition-api](https://github.com/vuejs/composition-api).
+
+This hook leverage [vue-extend-reactive](https://github.com/c5n8/vue-extend-reactive), so you don't have to worry about whether to use `.value` or not to acces reactive value, with one caveat that you don't destructure returned object to preserve reactivity.
+
+⚠️ Do not destructure returned object!
 
 ```html
 <template>
@@ -58,11 +62,11 @@ See [@vue/composition-api](https://github.com/vuejs/composition-api).
 </template>
 
 <script>
-import { useAsyncFunction } from 'vue-async-function'
+import { useAsync } from 'vue-use-async-hook'
 
 export default {
   setup() {
-    const generation = useAsyncFunction((min, max) => {
+    const generation = useAsync(async (min, max) => {
       await new Promise((resolve) => setTimeout(resolve, random(200, 2000)))
      
       if (random(0, 1)) {
@@ -96,7 +100,7 @@ function random(min, max) {
 ## API Reference
 
 ```ts
-declare function useAsyncFunction<
+declare function useAsync<
   F extends (...args: any[]) => Promise<Unpacked<ReturnType<F>>>
 >(fn: F): PromiseSnapshot<F> {
 
@@ -118,3 +122,5 @@ interface PromiseSnapshot<F extends (...args: any[]) => Promise<unknown>> {
 ## License
 
 [MIT](http://opensource.org/licenses/MIT)
+
+tags: vue, use, async, function, promise, state, snapshot, reactive, observable, composition, hooks

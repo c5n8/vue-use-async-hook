@@ -1,6 +1,6 @@
-import useAsyncFunction from './use-async-function'
+import useAsync from './use-async-hook'
 
-export default useAsyncFunction
+export default useAsync
 
-export * from './use-async-function'
+export * from './use-async-hook'
 

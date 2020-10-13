@@ -1,12 +1,12 @@
 {
-  "name": "vue-async-function",
+  "name": "vue-use-async-hook",
   "version": "1.0.0",
-  "description": "Reactive object that sync itself based on the latest snapshot of promise state by an async function.",
+  "description": "Wrap async function with reactive and observable promise state",
   "repository": {
     "type": "git",
-    "url": "https://github.com/c5n8/vue-async-function"
+    "url": "https://github.com/c5n8/vue-use-async-hook"
   },
-  "homepage": "https://github.com/c5n8/vue-async-function",
+  "homepage": "https://github.com/c5n8/vue-use-async-hook",
   "license": "MIT",
   "keywords": [
     "vue",
@@ -16,6 +16,8 @@
     "promise",
     "state",
     "snapshot",
+    "reactive",
+    "observable",
     "composition",
     "hooks"
   ],
@@ -30,9 +32,9 @@
   ],
   "author": "",
   "dependencies": {
-    "@vue/composition-api": "^1.0.0-beta.11",
+    "@vue/composition-api": "^1.0.0-beta.16",
     "vue": "^2.6.12",
-    "vue-extend-reactive": "^1.1.3"
+    "vue-extend-reactive": "^1.1.4"
   },
   "devDependencies": {
     "typescript": "^4.0.3"
