@@ -1,6 +1,4 @@
-import useAsync from './use-async-hook'
-
-export default useAsync
+export { default } from './use-async-hook'
 
 export * from './use-async-hook'
 

@@ -3,13 +3,11 @@ import { extend } from 'vue-extend-reactive'
 
 export default useAsync
 
-export function useAsync<
-  F extends (...args: any[]) => Promise<Unpacked<ReturnType<F>>>
->(fn: F): PromiseSnapshot<F> {
+export function useAsync<F extends Async<F>>(fn: F): Snapshot<F> {
   const state: State<F> = reactive({
-    error: undefined,
-    result: undefined,
     status: 'standby',
+    result: undefined,
+    error: undefined,
   })
 
   const getters: Getters = reactive({
@@ -34,12 +32,12 @@ export function useAsync<
 
   async function start(
     ...args: Parameters<F>
-  ): Promise<Unpacked<ReturnType<F>> | undefined> {
-    state.error = undefined
-    state.result = undefined
+  ): Promise<Unpacked<ReturnType<F>>> {
     state.status = 'pending'
+    state.result = undefined
+    state.error = undefined
 
-    let result: Unpacked<ReturnType<F>> | undefined
+    let result
 
     try {
       result = await fn(...args)
@@ -50,52 +48,54 @@ export function useAsync<
       throw error
     }
 
-    state.error = null
-    state.result = result
     state.status = 'fulfilled'
+    state.result = result
+    state.error = null
 
     return result
   }
 
-  return extend(extend(state, getters), <Methods<F>>{
-    start,
-  })
+  return extend(
+    extend(
+      <State<F>>reactive({
+        status: computed(() => state.status),
+        result: computed(() => state.result),
+        error: computed(() => state.error),
+      }),
+      getters
+    ),
+    { start }
+  )
 }
 
-interface PromiseSnapshot<F extends AsyncFunction>
-  extends State<F>,
-    Getters,
-    Methods<F> {
-  readonly error: any
-  readonly result: Unpacked<ReturnType<F>> | undefined
-  readonly status: PromiseStatus
-}
+type Snapshot<F extends Async<F>> = Readonly<
+  State<F> &
+    Getters & {
+      start(...args: Parameters<F>): Promise<Unpacked<ReturnType<F>>>
+    }
+>
 
-interface State<F extends AsyncFunction> {
-  error: any
+interface State<F extends Async<F>> {
+  status: 'standby' | 'pending' | 'fulfilled' | 'rejected'
   result: Unpacked<ReturnType<F>> | undefined
-  status: PromiseStatus
+  error: any
 }
 
-interface Getters {
-  readonly isStandby: boolean
-  readonly isPending: boolean
-  readonly isSettled: boolean
-  readonly isFulfilled: boolean | undefined
-  readonly isRejected: boolean | undefined
-  readonly hasResult: boolean | undefined
-  readonly hasError: boolean | undefined
-}
+type Getters = Readonly<{
+  isStandby: boolean
+  isPending: boolean
+  isSettled: boolean
+  isFulfilled: boolean | undefined
+  isRejected: boolean | undefined
+  hasResult: boolean | undefined
+  hasError: boolean | undefined
+}>
 
-interface Methods<F extends AsyncFunction> {
-  start(...args: Parameters<F>): ReturnType<F>
-}
+export type Async<F extends (...args: any[]) => Promise<unknown>> = (
+  ...args: any[]
+) => Promise<Unpacked<ReturnType<F>>>
 
-type PromiseStatus = 'standby' | 'pending' | 'fulfilled' | 'rejected'
-
-type AsyncFunction = (...args: any[]) => Promise<unknown>
-
-type Unpacked<T> = T extends (infer U)[]
+export type Unpacked<T> = T extends (infer U)[]
   ? U
   : T extends (...args: any[]) => infer U
   ? U
