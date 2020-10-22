@@ -19,3 +19,4 @@ Object.defineProperty(exports, "default", { enumerable: true, get: function () {
 __exportStar(require("./use-async"), exports);
 __exportStar(require("./use-async-ignoring-error"), exports);
 __exportStar(require("./use-async-with-handler"), exports);
+__exportStar(require("./use-async-log-error"), exports);
