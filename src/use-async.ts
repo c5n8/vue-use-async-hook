@@ -3,8 +3,10 @@ import { extend } from 'vue-extend-reactive'
 
 export default useAsync
 
-export function useAsync<F extends Async<F>>(fn: F): Snapshot<F> {
-  const state: State<F> = reactive({
+export function useAsync<F extends (...args: any[]) => Promise<any>>(
+  fn: F
+): [F, PromiseSnapshot<Unpacked<ReturnType<F>>>] {
+  const state: State<Unpacked<ReturnType<F>>> = reactive({
     status: 'standby',
     result: undefined,
     error: undefined,
@@ -30,72 +32,61 @@ export function useAsync<F extends Async<F>>(fn: F): Snapshot<F> {
     ),
   })
 
-  async function start(
+  async function fnReactive(
     ...args: Parameters<F>
   ): Promise<Unpacked<ReturnType<F>>> {
     state.status = 'pending'
     state.result = undefined
     state.error = undefined
 
-    let result
-
     try {
-      result = await fn(...args)
+      const result = await fn(...args)
+      state.status = 'fulfilled'
+      state.result = result
+      state.error = null
+
+      return result
     } catch (error) {
-      state.error = error
       state.status = 'rejected'
+      state.error = error
 
       throw error
     }
-
-    state.status = 'fulfilled'
-    state.result = result
-    state.error = null
-
-    return result
   }
 
-  return extend(
+  return [
+    <F>fnReactive,
     extend(
-      <State<F>>reactive({
+      reactive({
         status: computed(() => state.status),
         result: computed(() => state.result),
         error: computed(() => state.error),
       }),
       getters
     ),
-    { start }
-  )
+  ]
 }
 
-type Snapshot<F extends Async<F>> = Readonly<
-  State<F> &
-    Getters & {
-      start(...args: Parameters<F>): Promise<Unpacked<ReturnType<F>>>
-    }
->
+interface PromiseSnapshot<R> extends Readonly<State<R>>, Getters {}
 
-interface State<F extends Async<F>> {
+interface State<R> {
   status: 'standby' | 'pending' | 'fulfilled' | 'rejected'
-  result: Unpacked<ReturnType<F>> | undefined
+  result: R | undefined
   error: any
 }
 
-type Getters = Readonly<{
-  isStandby: boolean
-  isPending: boolean
-  isSettled: boolean
-  isFulfilled: boolean | undefined
-  isRejected: boolean | undefined
-  hasResult: boolean | undefined
-  hasError: boolean | undefined
-}>
+interface Getters
+  extends Readonly<{
+    isStandby: boolean
+    isPending: boolean
+    isSettled: boolean
+    isFulfilled: boolean | undefined
+    isRejected: boolean | undefined
+    hasResult: boolean | undefined
+    hasError: boolean | undefined
+  }> {}
 
-export type Async<F extends (...args: any[]) => Promise<unknown>> = (
-  ...args: any[]
-) => Promise<Unpacked<ReturnType<F>>>
-
-export type Unpacked<T> = T extends (infer U)[]
+type Unpacked<T> = T extends (infer U)[]
   ? U
   : T extends (...args: any[]) => infer U
   ? U

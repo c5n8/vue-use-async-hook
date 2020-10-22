@@ -1,4 +1,4 @@
-export { default } from './use-async-hook'
-
-export * from './use-async-hook'
-
+export { default } from './use-async'
+export * from './use-async'
+export * from './use-async-ignoring-error'
+export * from './use-async-with-handler'

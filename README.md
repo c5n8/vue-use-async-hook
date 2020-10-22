@@ -40,59 +40,53 @@ This hook leverage [vue-extend-reactive](https://github.com/c5n8/vue-extend-reac
 
 ```html
 <template>
-  <div>
-    <div v-if="generation.isStandby">
-      <div>Generate number 1-1000</div>
-      <button @click="generate()">Start</button>
+  <form @submit.prevent="submit">
+    <div>
+      <textarea v-model="payload.text" cols="30" rows="10"></textarea>
     </div>
-    <div v-else-if="generation.isPending">
-      Generating...
-    </div>
-    <div v-else-if="generation.isSettled">
-      <div v-if="generation.isFulfilled">
-        {{ generation.result }}
-      </div>
-      <div v-else-if="generation.isRejected">
-        {{ generation.error }}
-      </div>
 
-      <button @click="generate()">Retry</button>
+    <button v-if="submission.isStandby">
+      Submit
+    </button>
+    <button v-else-if="submission.isPending" disabled>
+      Submitting...
+    </button>
+    <button v-if="submission.isRejected">
+      Retry Submit
+    </button>
+
+    <div v-if="submission.isFulfilled">
+      Submitted successfully!
     </div>
-  </div>
+    <div v-else-if="submission.isRejected">
+      Failed to submit!
+      <div>{{ submission.error }}</div>
+    </div>
+  </form>
 </template>
 
-<script>
+<script lang="ts">
+import { reactive } from '@vue/composition-api'
 import { useAsync } from 'vue-use-async-hook'
 
 export default {
   setup() {
-    const generation = useAsync(async (min, max) => {
-      await new Promise((resolve) => setTimeout(resolve, random(200, 2000)))
-     
-      if (random(0, 1)) {
-        throw new Error('Failed to generate')
-      }
-     
-      return random(min, max)
+    const payload = reactive({
+      text: 'The quick brown fox jumps over the lazy dog.',
     })
 
-    async function generate() {
-      try {
-        await generation.start(1, 1000)
-      } catch (error) {
-        //
-      }
-    }
+    const [submit, submission] = useAsync(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+      // uncomment next line to simulate failure
+      // throw new Error('Server Error')
+    })
 
     return {
-      generation,
-      generate,
+      payload,
+      submit,
+      submission,
     }
   },
-}
-
-function random(min, max) {
-  return Math.floor(Math.random() * Math.floor(max - min + 1)) + min
 }
 </script>
 ```
@@ -101,13 +95,13 @@ function random(min, max) {
 
 ```ts
 declare function useAsync<
-  F extends (...args: any[]) => Promise<Unpacked<ReturnType<F>>>
->(fn: F): PromiseSnapshot<F> {
+  F extends (...args: any[]) => Promise<any>
+>(fn: F): [F, PromiseSnapshot<Unpacked<ReturnType<F>>>] {
 
-interface PromiseSnapshot<F extends (...args: any[]) => Promise<unknown>> {
-  readonly error: any
-  readonly result: Unpacked<ReturnType<F>> | undefined
+interface PromiseSnapshot<R> {
   readonly status: 'standby' | 'pending' | 'fulfilled' | 'rejected'
+  readonly result: R | undefined
+  readonly error: any
   readonly isStandby: boolean
   readonly isPending: boolean
   readonly isSettled: boolean
@@ -115,7 +109,6 @@ interface PromiseSnapshot<F extends (...args: any[]) => Promise<unknown>> {
   readonly isRejected: boolean | undefined
   readonly hasResult: boolean | undefined
   readonly hasError: boolean | undefined
-  start(...args: Parameters<F>): ReturnType<F>
 }
 ```
 
