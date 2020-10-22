@@ -17,5 +17,5 @@ exports.default = void 0;
 var use_async_1 = require("./use-async");
 Object.defineProperty(exports, "default", { enumerable: true, get: function () { return __importDefault(use_async_1).default; } });
 __exportStar(require("./use-async"), exports);
-__exportStar(require("./use-async-handler"), exports);
-__exportStar(require("./use-async-log-error"), exports);
+__exportStar(require("./use-async-with-handler"), exports);
+__exportStar(require("./use-async-and-log-error"), exports);
