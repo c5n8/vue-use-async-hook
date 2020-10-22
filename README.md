@@ -10,7 +10,8 @@
 
 ## News
 
-This version is compatible with Vue 2 using `@vue/composition-api` plugin.
+This version is compatible with Vue 3.
+If you use Vue 2, see [Vue 2 compatible version](https://github.com/c5n8/vue-use-async-hook)
 
 ## Tips
 
@@ -20,23 +21,20 @@ If you want similar functionality, but as component, then checkout [vue-promise-
 
 - Using NPM
 ```
-npm install vue-use-async-hook
+npm install vue-use-async-hook@next
 ```
 
 - Using Yarn
 ```
-yarn add vue-use-async-hook
+yarn add vue-use-async-hook@next
 ```
 
 ## Usage
+This hook take a function as argument, then returns an array which contains:
+- a function that has same signature as original function as first element
+- a reactive promise snapshot object that reflect the state of promise returned by original function as second element
 
-You must install `@vue/composition-api` as a plugin via `Vue.use()` beforehand.
-
-See [@vue/composition-api](https://github.com/vuejs/composition-api).
-
-This hook leverage [vue-extend-reactive](https://github.com/c5n8/vue-extend-reactive), so you don't have to worry about whether to use `.value` or not to acces reactive value, with one caveat that you don't destructure returned object to preserve reactivity.
-
-⚠️ Do not destructure returned object!
+⚠️ Do not destructure reactive promise snapshot object!
 
 ```html
 <template>
@@ -66,7 +64,7 @@ This hook leverage [vue-extend-reactive](https://github.com/c5n8/vue-extend-reac
 </template>
 
 <script lang="ts">
-import { reactive } from '@vue/composition-api'
+import { reactive } from 'vue'
 import { useAsync } from 'vue-use-async-hook'
 
 export default {
