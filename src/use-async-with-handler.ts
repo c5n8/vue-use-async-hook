@@ -1,7 +1,7 @@
 import type { PromiseSnapshot, Unpacked } from './types'
 import useAsync from './use-async'
 
-export function useAsyncHandler<F extends (...args: any[]) => Promise<any>>(
+export function useAsyncWithHandler<F extends (...args: any[]) => Promise<any>>(
   fn: F,
   {
     onFulfilled,
