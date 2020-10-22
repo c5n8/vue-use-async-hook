@@ -11,6 +11,7 @@
 ## News
 
 This version is compatible with Vue 2 using `@vue/composition-api` plugin.
+If you use Vue 3, see [Vue 3 compatible version](https://github.com/c5n8/vue-use-async-hook/tree/release/v3.0.0)
 
 ## Tips
 
@@ -34,7 +35,9 @@ You must install `@vue/composition-api` as a plugin via `Vue.use()` beforehand.
 
 See [@vue/composition-api](https://github.com/vuejs/composition-api).
 
-This hook leverage [vue-extend-reactive](https://github.com/c5n8/vue-extend-reactive), so you don't have to worry about whether to use `.value` or not to acces reactive value, with one caveat that you don't destructure returned object to preserve reactivity.
+This hook take a function as argument, then returns an array which contains:
+- a function that has same signature as original function as first element
+- a reactive promise snapshot object that reflect the state of promise returned by original function as second element
 
 ⚠️ Do not destructure returned object!
 
