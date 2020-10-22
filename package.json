@@ -1,6 +1,6 @@
 {
   "name": "vue-use-async-hook",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "Wrap async function with reactive and observable promise state",
   "repository": {
     "type": "git",
