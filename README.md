@@ -74,9 +74,13 @@ export default {
     })
 
     const [submit, submission] = useAsync(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-      // uncomment next line to simulate failure
-      // throw new Error('Server Error')
+      // TODO: implement your submit function
+
+      // simulate successfull submission
+      await new Promise(resolve => setTimeout(resolve, 1000))
+
+      // uncomment next line to simulate failed submission
+      // throw new Error('Server error')
     })
 
     return {
