@@ -10,7 +10,7 @@
 
 ## News
 
-This version is compatible with Vue 2 using `@vue/composition-api` plugin.
+This version is compatible with Vue 2.7.
 If you use Vue 3, see [Vue 3 compatible version](https://github.com/c5n8/vue-use-async-hook/tree/release/v3.0.0)
 
 ## Tips
@@ -20,47 +20,38 @@ If you want similar functionality, but as component, then checkout [vue-promise-
 ## Installation
 
 - Using NPM
+
 ```
 npm install vue-use-async-hook
 ```
 
 - Using Yarn
+
 ```
 yarn add vue-use-async-hook
 ```
 
 ## Usage
 
-You must install `@vue/composition-api` as a plugin via `Vue.use()` beforehand.
-
-See [@vue/composition-api](https://github.com/vuejs/composition-api).
-
 This hook take a function as argument, then returns an array which contains:
+
 - a function that has same signature as original function as first element
 - a reactive promise snapshot object that reflect the state of promise returned by original function as second element
 
 ⚠️ Do not destructure returned object!
 
-```html
+```vue
 <template>
   <form @submit.prevent="submit">
     <div>
       <textarea v-model="payload.text" cols="30" rows="10"></textarea>
     </div>
 
-    <button v-if="submission.isStandby">
-      Submit
-    </button>
-    <button v-else-if="submission.isPending" disabled>
-      Submitting...
-    </button>
-    <button v-if="submission.isRejected">
-      Retry Submit
-    </button>
+    <button v-if="submission.isStandby">Submit</button>
+    <button v-else-if="submission.isPending" disabled>Submitting...</button>
+    <button v-if="submission.isRejected">Retry Submit</button>
 
-    <div v-if="submission.isFulfilled">
-      Submitted successfully!
-    </div>
+    <div v-if="submission.isFulfilled">Submitted successfully!</div>
     <div v-else-if="submission.isRejected">
       Failed to submit!
       <div>{{ submission.error }}</div>
@@ -69,7 +60,7 @@ This hook take a function as argument, then returns an array which contains:
 </template>
 
 <script lang="ts">
-import { reactive } from '@vue/composition-api'
+import { reactive } from 'vue'
 import { useAsync } from 'vue-use-async-hook'
 
 export default {
@@ -82,7 +73,7 @@ export default {
       // TODO: implement your submit function
 
       // simulate successfull submission
-      await new Promise(resolve => setTimeout(resolve, 1000))
+      await new Promise((resolve) => setTimeout(resolve, 1000))
 
       // uncomment next line to simulate failed submission
       // throw new Error('Server error')
