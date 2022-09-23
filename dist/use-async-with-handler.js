@@ -15,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.useAsyncWithHandler = void 0;
 const use_async_1 = __importDefault(require("./use-async"));
 function useAsyncWithHandler(fn, { onFulfilled, onRejected, onSettled, }) {
-    const [_call, snapshot] = use_async_1.default(fn);
+    const [_call, snapshot] = (0, use_async_1.default)(fn);
     function call(...args) {
         return __awaiter(this, void 0, void 0, function* () {
             let result;

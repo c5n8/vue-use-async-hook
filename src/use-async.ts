@@ -1,4 +1,4 @@
-import { reactive, computed } from '@vue/composition-api'
+import { reactive, computed } from 'vue'
 import { extend } from 'vue-extend-reactive'
 
 export default useAsync
