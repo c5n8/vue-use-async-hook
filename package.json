@@ -32,7 +32,7 @@
   ],
   "author": "",
   "dependencies": {
-    "vue": "^3.2.39",
+    "vue": "^2.7.10",
     "vue-extend-reactive": "^1.1.4"
   },
   "devDependencies": {
